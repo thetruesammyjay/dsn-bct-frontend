@@ -1,18 +1,27 @@
 import { TaskBContextRequest, TaskBChatRequest, TaskBResponse, Recommendation } from "../types";
 
-const API_URL = process.env.NEXT_PUBLIC_TASK_B_API_URL || "http://localhost:8001";
+const API_URL = process.env.NEXT_PUBLIC_TASK_B_API_URL || "https://nexusbert-dsn.hf.space";
 
 export async function fetchInitialRecommendations(data: TaskBContextRequest): Promise<Recommendation[]> {
   try {
-    const response = await fetch(`${API_URL}/api/recommendations/initial`, {
+    const response = await fetch(`${API_URL}/task-2`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        chat_history: [],
+        persona: `display_name: ${data.persona}`,
+        top_k_retrieval: 20,
+        top_n_final: 3
+      }),
     });
 
     if (!response.ok) throw new Error(`Error: ${response.statusText}`);
-    const res: TaskBResponse = await response.json();
-    return res.recommendations;
+    const res = await response.json();
+    return res.recommendations.map((r: any) => ({
+      name: r.business_id || "Unknown Entity",
+      reason: r.rationale || "No rationale provided by model.",
+      score: r.rank === 0 ? 0.99 : (0.99 - (r.rank * 0.1))
+    }));
   } catch (error) {
     console.error("Task B API Error:", error);
     // Fallback for development/UI testing if backend is down
@@ -25,14 +34,33 @@ export async function fetchInitialRecommendations(data: TaskBContextRequest): Pr
 
 export async function sendChatMessage(data: TaskBChatRequest): Promise<TaskBResponse> {
   try {
-    const response = await fetch(`${API_URL}/api/recommendations/chat`, {
+    const formattedHistory = data.history.map(h => [h.role === "user" ? "user" : "agent", h.content]);
+    if (data.message) {
+      formattedHistory.push(["user", data.message]);
+    }
+    
+    const response = await fetch(`${API_URL}/task-2`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        chat_history: formattedHistory,
+        persona: `display_name: ${data.persona}`,
+        top_k_retrieval: 20,
+        top_n_final: 3
+      }),
     });
 
     if (!response.ok) throw new Error(`Error: ${response.statusText}`);
-    return await response.json();
+    const res = await response.json();
+    
+    return {
+      recommendations: res.recommendations.map((r: any) => ({
+        name: r.business_id || "Unknown Entity",
+        reason: r.rationale || "No rationale provided.",
+        score: r.rank === 0 ? 0.99 : Math.max(0.1, 0.99 - (r.rank * 0.1))
+      })),
+      reply: "Here are updated recommendations tailored to your input."
+    };
   } catch (error) {
     console.error("Task B Chat Error:", error);
     return {
