@@ -12,16 +12,21 @@ export default function TaskBPage() {
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [history, setHistory] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [context, setContext] = useState({ persona: "", domain: "" });
+  const [context, setContext] = useState({ persona: "", city: "", state: "" });
 
-  const handleInitialContext = async (persona: string, domain: string) => {
+  const handleInitialContext = async (persona: string, city: string, state: string) => {
     setIsLoading(true);
-    setContext({ persona, domain });
+    setContext({ persona, city, state });
     setHistory([]);
     try {
-      const recs = await fetchInitialRecommendations({ persona, domain });
+      const recs = await fetchInitialRecommendations({ persona, city, state });
       setRecommendations(recs);
-      setHistory([{ role: "assistant", content: `I've found some initial recommendations based on the ${persona} profile in the ${domain} domain.` }]);
+      setHistory([
+        {
+          role: "assistant",
+          content: `I've loaded initial recommendations for the provided persona${city || state ? ` in ${[city, state].filter(Boolean).join(", ")}` : ""}.`,
+        },
+      ]);
     } catch (error) {
       console.error(error);
     } finally {
@@ -37,16 +42,22 @@ export default function TaskBPage() {
     try {
       const res = await sendChatMessage({
         persona: context.persona,
-        domain: context.domain,
-        history: newContextHistory,
-        message
+        city: context.city || null,
+        state: context.state || null,
+        chat_history: newContextHistory,
+        top_k_retrieval: 20,
+        top_n_final: 3,
       });
-      if (res.reply) {
-        setHistory([...newContextHistory, { role: "assistant", content: res.reply }]);
-      }
       if (res.recommendations?.length) {
         setRecommendations(res.recommendations);
       }
+      setHistory([
+        ...newContextHistory,
+        {
+          role: "assistant",
+          content: `Updated recommendations returned. Candidates considered: ${res.candidates_considered}.`,
+        },
+      ]);
     } catch (error) {
       console.error(error);
     } finally {

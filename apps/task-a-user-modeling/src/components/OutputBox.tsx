@@ -8,9 +8,9 @@ interface OutputBoxProps {
 }
 
 export function OutputBox({ response }: OutputBoxProps) {
-  // Convert rating out of 5 into an array for rendering
+  const rating = response.stars ?? 0;
   const stars = Array.from({ length: 5 }).map((_, index) => {
-    return index < Math.floor(response.rating);
+    return index < Math.floor(rating);
   });
 
   return (
@@ -31,7 +31,7 @@ export function OutputBox({ response }: OutputBoxProps) {
                 />
               ))}
             </div>
-            <span className="font-mono text-sm font-bold ml-1">{response.rating}/5</span>
+            <span className="font-mono text-sm font-bold ml-1">{rating}/5</span>
           </div>
         </div>
 
@@ -45,7 +45,12 @@ export function OutputBox({ response }: OutputBoxProps) {
             <div className="h-px bg-border/50 flex-1" />
           </div>
           <div className="flex flex-wrap gap-2">
-            {response.meta.map((tag, i) => (
+            {[
+              `Task: ${response.task}`,
+              `RAG snippets: ${response.rag_snippets_used}`,
+              `Parse ok: ${response.parse_ok ? "yes" : "no"}`,
+              ...response.agent_steps,
+            ].map((tag, i) => (
               <span 
                 key={i} 
                 className="font-mono text-[0.65rem] px-2.5 py-1 rounded bg-[rgba(255,255,255,0.03)] border border-border text-muted-foreground"

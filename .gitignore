@@ -8,6 +8,10 @@ yarn-error.log*
 pnpm-debug.log*
 .pnpm-debug.log*
 
+#huggingface
+api/
+api/DSN/
+
 # testing
 coverage/
 

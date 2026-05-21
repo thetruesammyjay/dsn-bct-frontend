@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Button, Input, Card, CardContent } from "ui";
-import { PersonaSelector } from "./PersonaSelector";
+import { PersonaSelector, TASK_A_PERSONAS } from "./PersonaSelector";
 import { ArrowRight, Sparkles } from "lucide-react";
 
 interface ReviewFormProps {
@@ -11,7 +11,7 @@ interface ReviewFormProps {
 }
 
 export function ReviewForm({ onSubmit, isLoading }: ReviewFormProps) {
-  const [persona, setPersona] = useState("casual_lagos");
+  const [persona, setPersona] = useState(TASK_A_PERSONAS[0].value);
   const [category, setCategory] = useState("restaurant");
   const [item, setItem] = useState("The Place, Lekki");
 
