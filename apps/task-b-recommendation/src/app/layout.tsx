@@ -13,23 +13,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap"
-          rel="stylesheet"
-        />
-        <style>{`
-          :root {
-            --font-heading: 'Syne', sans-serif;
-            --font-sans: 'DM Sans', sans-serif;
-            --font-mono: 'DM Mono', monospace;
-          }
-        `}</style>
-      </head>
-      <body className="antialiased selection:bg-accent/30 selection:text-accent">
+    <html lang="en" suppressHydrationWarning>
+      <body className="antialiased selection:bg-accent/30 selection:text-accent" suppressHydrationWarning>
         <div className="orb orb-1" />
         <div className="orb orb-2" />
         <div className="orb orb-3" />
