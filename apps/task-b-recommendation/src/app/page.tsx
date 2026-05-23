@@ -7,17 +7,21 @@ import { ChatInterface } from "../components/ChatInterface";
 import { fetchInitialRecommendations, sendChatMessage } from "../lib/api";
 import { Recommendation, ChatMessage } from "../types";
 import { Card, CardContent } from "ui";
+import { AlertTriangle } from "lucide-react";
 
 export default function TaskBPage() {
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [history, setHistory] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [context, setContext] = useState({ persona: "", city: "", state: "" });
+  const [error, setError] = useState<string | null>(null);
 
   const handleInitialContext = async (persona: string, city: string, state: string) => {
     setIsLoading(true);
     setContext({ persona, city, state });
     setHistory([]);
+    setRecommendations([]);
+    setError(null);
     try {
       const recs = await fetchInitialRecommendations({ persona, city, state });
       setRecommendations(recs);
@@ -27,8 +31,10 @@ export default function TaskBPage() {
           content: `I've loaded initial recommendations for the provided persona${city || state ? ` in ${[city, state].filter(Boolean).join(", ")}` : ""}.`,
         },
       ]);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Unknown error";
+      console.error("Task B fetch error:", message);
+      setError(message);
     } finally {
       setIsLoading(false);
     }
@@ -38,6 +44,7 @@ export default function TaskBPage() {
     const newContextHistory = [...history, { role: "user", content: message } as ChatMessage];
     setHistory(newContextHistory);
     setIsLoading(true);
+    setError(null);
 
     try {
       const res = await sendChatMessage({
@@ -58,8 +65,14 @@ export default function TaskBPage() {
           content: `Updated recommendations returned. Candidates considered: ${res.candidates_considered}.`,
         },
       ]);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Unknown error";
+      console.error("Task B chat error:", message);
+      setError(message);
+      setHistory([
+        ...newContextHistory,
+        { role: "assistant", content: "⚠️ The agent could not be reached. Please try again." },
+      ]);
     } finally {
       setIsLoading(false);
     }
@@ -68,7 +81,7 @@ export default function TaskBPage() {
   return (
     <main className="min-h-screen pt-32 pb-20 px-4 md:px-10 flex flex-col items-center">
       <div className="w-full max-w-5xl flex flex-col gap-10">
-        
+
         <div className="text-center md:text-left">
           <div className="inline-flex items-center gap-2 font-mono text-[0.65rem] tracking-[0.14em] uppercase text-accent mb-4 border border-[rgba(245,166,35,0.25)] px-3.5 py-1.5 rounded-sm bg-[rgba(245,166,35,0.05)]">
             Task B Agent
@@ -85,14 +98,14 @@ export default function TaskBPage() {
           {/* Controls Side */}
           <div className="lg:col-span-5 flex flex-col gap-6">
             <ContextInput onSubmit={handleInitialContext} isLoading={isLoading && history.length === 0} />
-            
+
             {recommendations.length > 0 && (
               <Card className="w-full bg-[rgba(0,0,0,0.3)] border-border animate-fade-up">
                 <CardContent className="p-6">
-                  <ChatInterface 
-                    history={history} 
-                    onSendMessage={handleChat} 
-                    isLoading={isLoading && history.length > 0} 
+                  <ChatInterface
+                    history={history}
+                    onSendMessage={handleChat}
+                    isLoading={isLoading && history.length > 0}
                   />
                 </CardContent>
               </Card>
@@ -108,6 +121,18 @@ export default function TaskBPage() {
                   Querying Index...
                 </span>
               </div>
+            ) : error ? (
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-surface/30 border border-red-900/30 rounded-xl p-8 gap-4 text-center">
+                <AlertTriangle className="w-8 h-8 text-amber-500" />
+                <p className="font-mono text-sm text-muted-foreground">Agent API Unavailable</p>
+                <p className="text-xs text-muted-foreground/60 max-w-xs leading-relaxed">
+                  The backend agent could not be reached. Ensure the API is deployed and the
+                  environment variable is set correctly.
+                </p>
+                <code className="text-[0.65rem] text-red-400/70 bg-red-950/20 border border-red-900/30 px-3 py-2 rounded w-full break-all">
+                  {error}
+                </code>
+              </div>
             ) : recommendations.length > 0 ? (
               <RecommendationList recommendations={recommendations} />
             ) : (
@@ -117,7 +142,7 @@ export default function TaskBPage() {
             )}
           </div>
         </div>
-        
+
       </div>
     </main>
   );

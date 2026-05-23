@@ -11,11 +11,10 @@ export default function TaskAPage() {
 
   const handleSubmit = async (persona: string, category: string, item: string) => {
     setIsLoading(true);
+    setResponse(null);
     try {
       const res = await generateUserReview({ persona, category, item });
       setResponse(res);
-    } catch (error) {
-      console.error(error);
     } finally {
       setIsLoading(false);
     }

@@ -1,25 +1,6 @@
 import type { Metadata } from "next";
-import { Syne, DM_Sans, DM_Mono } from "next/font/google";
 import "./globals.css";
 import { Navigation } from "ui";
-
-const syne = Syne({ 
-  subsets: ["latin"], 
-  variable: "--font-heading",
-  weight: ["400", "600", "700", "800"] 
-});
-
-const dmSans = DM_Sans({ 
-  subsets: ["latin"], 
-  variable: "--font-sans",
-  weight: ["300", "400", "500"] 
-});
-
-const dmMono = DM_Mono({ 
-  subsets: ["latin"], 
-  variable: "--font-mono",
-  weight: ["400", "500"] 
-});
 
 export const metadata: Metadata = {
   title: "Task B: Recommendation | NaijaInsight",
@@ -32,7 +13,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${syne.variable} ${dmSans.variable} ${dmMono.variable}`}>
+    <html lang="en" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap"
+          rel="stylesheet"
+        />
+        <style>{`
+          :root {
+            --font-heading: 'Syne', sans-serif;
+            --font-sans: 'DM Sans', sans-serif;
+            --font-mono: 'DM Mono', monospace;
+          }
+        `}</style>
+      </head>
       <body className="antialiased selection:bg-accent/30 selection:text-accent">
         <div className="orb orb-1" />
         <div className="orb orb-2" />
