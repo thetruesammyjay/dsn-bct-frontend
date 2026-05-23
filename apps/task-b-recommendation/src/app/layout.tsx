@@ -14,6 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head />
       <body className="antialiased selection:bg-accent/30 selection:text-accent" suppressHydrationWarning>
         <div className="orb orb-1" />
         <div className="orb orb-2" />

@@ -14,12 +14,12 @@ export function Navigation({ badgeText = "DSN x BCT Hackathon 3.0" }: Navigation
 
   return (
     <header className="fixed top-0 left-0 right-0 z-[100] p-4 md:p-6 flex justify-center pointer-events-none">
-      <nav className="pointer-events-auto w-full max-w-5xl flex items-center justify-between bg-[rgba(8,12,16,0.65)] backdrop-blur-xl border border-white/[0.08] px-5 py-3 md:px-7 md:py-4 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.6)]">
-        <a href="/" className="flex items-center gap-2.5 transition-transform duration-300 hover:scale-[1.02]">
+      <nav className="pointer-events-auto w-fit flex items-center justify-between gap-8 md:gap-20 bg-[rgba(8,12,16,0.65)] backdrop-blur-xl border border-white/[0.08] px-6 py-3.5 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.6)] transition-all duration-300 hover:border-white/[0.15]">
+        <a href="/" className="flex items-center transition-transform duration-300 hover:scale-[1.02] shrink-0">
           <img 
             src="/NaijaInsight.png" 
             alt="NaijaInsight" 
-            className="h-8 md:h-9 w-auto object-contain" 
+            className="h-7 md:h-8 w-auto object-contain" 
           />
         </a>
         
