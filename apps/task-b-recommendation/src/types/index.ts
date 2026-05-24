@@ -2,10 +2,14 @@ export interface Recommendation {
   business_id: string;
   rank: number;
   rationale: string;
-  // ⬇ These fields will be populated once the backend engineer adds them to the response
+  // Optional enrichment fields — present when the backend includes them
   name?: string;
   categories?: string;
+  city?: string;
+  state?: string;
+  stars?: number | null;
 }
+
 
 export interface TaskBContextRequest {
   persona: string;

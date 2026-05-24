@@ -82,9 +82,14 @@ dsn-bct-frontend/
 
 3. **Configure Environment Variables:**
    - Create a `.env.local` file in each app directory (`apps/task-a-user-modeling` and `apps/task-b-recommendation`).
-   - Add your backend agent API URL:
+   - Add your backend agent API URL (optional — both apps default to the live HuggingFace Space):
      ```env
-     NEXT_PUBLIC_API_URL=http://your-agent-backend-url.com
+     # Shared base URL (used by both apps as fallback)
+     NEXT_PUBLIC_API_BASE_URL=https://nexusbert-dsn.hf.space
+
+     # Per-app overrides (optional)
+     NEXT_PUBLIC_TASK_A_API_URL=http://localhost:8000
+     NEXT_PUBLIC_TASK_B_API_URL=http://localhost:8000
      ```
 
 4. **Run the Development Server:**
