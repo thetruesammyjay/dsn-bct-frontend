@@ -8,13 +8,13 @@ Our submission, **NaijaInsight**, focuses on designing autonomous LLM agents tha
 
 ---
 
-## 🏆 Deliverables & Live Links
+## Deliverables & Live Links
 
 ### Live Agent Deployments
 - **Task A (User Modeling):** [https://dsn-bct-task-a.vercel.app/](https://dsn-bct-task-a.vercel.app/)
 - **Task B (Recommendation):** [https://dsn-bct-task-b.vercel.app/](https://dsn-bct-task-b.vercel.app/)
 
-### 📄 Solution Papers (Thesis Format)
+### Solution Papers (Thesis Format)
 Extensive architectural deep-dives, RAG pipeline mechanics, vector mathematics, ablation studies, and UML flowcharts are provided in the `/Solution Paper` directory:
 - [Task A Solution Paper](./Solution%20Paper/SOLUTION_PAPER_TASK_A.md)
 - [Task B Solution Paper](./Solution%20Paper/SOLUTION_PAPER_TASK_B.md)
